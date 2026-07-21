@@ -1,0 +1,6 @@
+G13S1.fasta,cdifficile,29,adk(1),atpA(1),dxr(2),glyA(16),recA(1),sodA(3),tpi(1),mlst_clade(Clade1)
+CLO_AA1474AA_AS.fasta,cdifficile,638,adk(1),atpA(5),dxr(9),glyA(37),recA(1),sodA(1),tpi(78),mlst_clade(Clade2)
+CLO_AA7542AA_AS.fasta,cdifficile,162,adk(1),atpA(6),dxr(4),glyA(7),recA(2),sodA(30),tpi(7),mlst_clade(Clade3)
+CLO_AA7539AA_AS.fasta,cdifficile,238,adk(3),atpA(12),dxr(10),glyA(8),recA(6),sodA(18),tpi(15),mlst_clade(Clade4)
+CLO_AA4343AA_AS.fasta,cdifficile,207,adk(5),atpA(8),dxr(5),glyA(41),recA(9),sodA(11),tpi(8),mlst_clade(Clade5)
+CLO_AA0787AA.fasta,cdifficile,764,adk(13),atpA(46),dxr(64),glyA(31),recA(18),sodA(32),tpi(26),mlst_clade(Cryptic)
