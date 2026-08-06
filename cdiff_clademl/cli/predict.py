@@ -36,6 +36,7 @@ from cdiff_clademl.bundle import (
 from cdiff_clademl.config import ALL_CLADES, CONFIDENCE_BAND_THRESHOLDS
 from cdiff_clademl.features import build_meta_features
 from cdiff_clademl.io import (
+    evaluation_group_ids,
     read_mlst_table,
     write_eval_files,
     write_grouped_eval_files,
@@ -315,8 +316,10 @@ def main() -> None:
         ["INSUFFICIENT_LOCI", "UNKNOWN_ALLELE", "PARTIAL_PROFILE"],
         default="PASS",
     )
-    out["review_recommended"] = out["stage1_support_band"].eq("LOW") | out["quality_flag"].ne(
-        "PASS"
+    out["review_recommended"] = (
+        out["stage1_support_band"].eq("LOW")
+        | out["quality_flag"].ne("PASS")
+        | (out["final_prediction"].eq("Cryptic") & out["rare_locus_count_report"].lt(4))
     )
 
     _out_dir = os.path.dirname(args.output_predictions)
@@ -354,21 +357,21 @@ def main() -> None:
             final_pred[_labelled],
             ALL_CLADES,
         )
-        labelled_st = df.loc[_labelled, "st"].astype(str).str.strip()
-        missing_st = labelled_st.str.casefold().isin({"", "-", "na", "n/a", "nan", "none"})
-        if missing_st.any():
+        labelled_st, n_unassigned_st = evaluation_group_ids(
+            df.loc[_labelled, "st"], df.loc[_labelled, "isolate"]
+        )
+        if n_unassigned_st:
             logging.warning(
-                "Skipping ST-weighted metrics because %d labelled row(s) lack ST.",
-                int(missing_st.sum()),
+                "Treating %d row(s) with unassigned ST as separate groups in ST-weighted metrics.",
+                n_unassigned_st,
             )
-        else:
-            write_grouped_eval_files(
-                f"{args.metrics_prefix}_by_st",
-                df.loc[_labelled, "mlst_clade"].to_numpy(),
-                final_pred[_labelled],
-                labelled_st.to_numpy(),
-                ALL_CLADES,
-            )
+        write_grouped_eval_files(
+            f"{args.metrics_prefix}_by_st",
+            df.loc[_labelled, "mlst_clade"].to_numpy(),
+            final_pred[_labelled],
+            labelled_st.to_numpy(),
+            ALL_CLADES,
+        )
         vprint("Evaluation files written.", args.verbose)
 
     if args.report_html:
