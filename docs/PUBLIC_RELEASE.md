@@ -7,6 +7,13 @@ difficile* MLST profiles. It is not a clinical diagnostic device, does not
 assign individual cryptic lineages, and does not replace sequence-based or
 phylogenomic review.
 
+The repository may be forked as an implementation template for a different
+MLST allele-profile classification, but no derivative may claim the bundled
+model's performance or use its model, thresholds, or allele-distance matrices
+outside seven-locus *C. difficile* clade classification. A derivative release
+requires its own validation and model card; see
+[`ADAPTING_TO_OTHER_MLST_SCHEMES.md`](ADAPTING_TO_OTHER_MLST_SCHEMES.md).
+
 ## Data and model provenance
 
 The source repository distributes the software, bundled model and model card;
