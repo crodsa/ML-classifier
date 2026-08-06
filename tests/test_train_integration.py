@@ -108,7 +108,9 @@ class TrainerIntegrationTests(unittest.TestCase):
             output = pd.read_csv(predictions, sep="\t")
             self.assertEqual(output.final_prediction.tolist(), output.mlst_clade.tolist())
             report = (work / "report.html").read_text(encoding="utf-8")
-            self.assertIn("Priority review queue", report)
+            self.assertIn("Detailed calls — all input profiles", report)
+            self.assertIn("review_recommended", report)
+            self.assertNotIn("Priority review queue", report)
 
 
 if __name__ == "__main__":
