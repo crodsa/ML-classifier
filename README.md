@@ -172,6 +172,11 @@ specific cryptic lineage. When its profile is partial or contains unknown
 alleles, treat it as a **Cryptic candidate requiring review**, not as a final
 phylogenetic designation.
 
+Version 5.4 reports `rare_locus_count_report` but the retained v5.3.0 binary
+does not use a four-rare-locus threshold as a hard gate. A Cryptic call with
+fewer than four rare loci is therefore marked for expert review; a future model
+revision should make any stricter gate part of a newly validated model bundle.
+
 ## Evaluate a labelled table
 
 For an 11-column table whose final column is `mlst_clade`, generate evaluation
