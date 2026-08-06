@@ -341,6 +341,24 @@ def write_grouped_eval_files(
     )
 
 
+def evaluation_group_ids(st: pd.Series, isolate: pd.Series) -> tuple[pd.Series, int]:
+    """Return safe groups for one-vote-per-ST evaluation.
+
+    FastMLST uses values such as ``new_ST`` when it cannot assign a numerical
+    sequence type. Such labels are not shared biological STs; each affected row
+    must therefore be treated as its own unassigned group rather than collapsed
+    with other novel profiles.
+    """
+    clean_st = pd.Series(st, copy=True).astype(str).str.strip()
+    clean_isolate = pd.Series(isolate, index=clean_st.index, copy=True).astype(str).str.strip()
+    unassigned_values = _MISSING_VALUES | {"new_st", "new st", "novel_st", "novel st"}
+    unassigned = clean_st.str.casefold().isin(unassigned_values)
+    groups = clean_st.copy()
+    row_keys = clean_isolate + "::" + clean_isolate.index.astype(str)
+    groups.loc[unassigned] = "__UNASSIGNED_ST__::" + row_keys.loc[unassigned]
+    return groups, int(unassigned.sum())
+
+
 # ==============================================================================
 # Model card (Priority 3 — structured output)
 # ==============================================================================
