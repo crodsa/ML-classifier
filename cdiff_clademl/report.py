@@ -46,6 +46,23 @@ def _metric_rows(metrics: dict[str, float]) -> list[list[str]]:
     ]
 
 
+def _display_prediction_value(column: str, value: Any) -> Any:
+    """Format numeric prediction fields consistently without hiding information."""
+    if isinstance(value, (float, np.floating)):
+        if column.startswith(("sum_", "nearest_", "stage1_", "final_")):
+            return f"{value:.4f}"
+        return f"{value:.4f}"
+    return value
+
+
+def _prediction_rows(frame: pd.DataFrame, columns: list[str]) -> list[list[Any]]:
+    """Render every selected prediction field for every input profile."""
+    return [
+        [_display_prediction_value(column, row[column]) for column in columns]
+        for _, row in frame.reindex(columns=columns).iterrows()
+    ]
+
+
 def _evaluation_sections(out_df: pd.DataFrame) -> str:
     """Create performance sections only for rows with an actual reference label."""
     if "mlst_clade" not in out_df.columns:
@@ -127,7 +144,10 @@ def write_html_report(
         ["_priority", "_cryptic", "stage1_confidence"], ascending=[True, False, True]
     ).head(100)
 
-    class_rows = [[label, int(summary.get("class_counts", {}).get(label, 0))] for label in ALL_CLADES]
+    class_rows = []
+    for label in ALL_CLADES:
+        isolates = out_df.loc[out_df["final_prediction"].eq(label), "isolate"].tolist()
+        class_rows.append([label, len(isolates), "; ".join(map(str, isolates)) or "—"])
     quality_rows = [[label, int(count)] for label, count in summary.get("quality_flags", {}).items()]
     support_rows = [[label, int(count)] for label, count in summary.get("stage1_support_bands", {}).items()]
     queue_columns = [
@@ -144,17 +164,9 @@ def write_html_report(
         "sum_min_dist_any_classical",
         "nearest_profile_dist_any_classical",
     ]
-    queue = review.reindex(columns=queue_columns)
-    queue_rows = []
-    for _, row in queue.iterrows():
-        rendered = []
-        for column in queue_columns:
-            value = row[column]
-            if isinstance(value, (float, np.floating)) and column.startswith(("sum_", "nearest_")):
-                rendered.append(f"{value:.4f}")
-            else:
-                rendered.append(value)
-        queue_rows.append(rendered)
+    queue_rows = _prediction_rows(review, queue_columns)
+    detail_columns = list(out_df.columns)
+    detail_rows = _prediction_rows(out_df, detail_columns)
 
     hash_display = (model_sha256 or "not recorded")
     provenance_rows = [
@@ -175,13 +187,14 @@ h1{{margin-bottom:4px}} h2{{margin-top:34px;color:#1d4c62}} h3{{margin-top:22px}
 .subtitle,.note{{color:#4d5e70}} .warning{{border-left:5px solid #c57a00;background:#fff5df;padding:14px 16px}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}} .card{{background:#fff;border:1px solid #dce3ec;border-radius:10px;padding:16px}}
 table{{border-collapse:collapse;width:100%;background:#fff;margin:10px 0 16px}} th,td{{border:1px solid #dce3ec;padding:8px;text-align:left;vertical-align:top}} th{{background:#eaf2f5;color:#183d4e}}
-.queue{{font-size:0.88rem;overflow-wrap:anywhere}} footer{{font-size:.9rem;color:#4d5e70;margin-top:32px}}
+.table-wrap{{overflow-x:auto;border:1px solid #dce3ec;border-radius:8px;background:#fff}} .table-wrap table{{margin:0;min-width:max-content}} .queue,.details{{font-size:0.88rem;overflow-wrap:anywhere}} footer{{font-size:.9rem;color:#4d5e70;margin-top:32px}}
 </style></head><body>
 <h1>{PROGRAM} run report</h1>
 <p class="subtitle">Research and molecular-surveillance use only. This file is a review aid; the accompanying TSV is the complete result.</p>
 <div class="warning"><strong>Interpretation safeguard.</strong> <em>Cryptic</em> is a combined category, not an assignment to a specific cryptic lineage. Calls with missing, approximate, or unknown alleles require MLST/QC confirmation and, when biologically consequential, phylogenomic review. This software is not validated for clinical diagnosis or treatment decisions.</div>
-<section><h2>Run overview</h2><div class="grid"><div class="card"><h3>Final calls</h3>{_table(["Class", "Profiles"], class_rows)}</div><div class="card"><h3>Quality flags</h3>{_table(["Flag", "Profiles"], quality_rows)}</div><div class="card"><h3>Classical-stage support</h3>{_table(["Band", "Profiles"], support_rows)}</div></div></section>
-<section><h2>Priority review queue</h2><p class="note">Ordered by input-quality risk, then Cryptic calls and lower classical-stage support. Up to 100 rows are shown.</p>{_table(queue_columns, queue_rows, "queue") if queue_rows else '<p class="note">No profiles were flagged for expert review.</p>'}</section>
+<section><h2>Run overview</h2><div class="grid"><div class="card"><h3>Final calls</h3>{_table(["Class", "Profiles", "Isolates"], class_rows)}</div><div class="card"><h3>Quality flags</h3>{_table(["Flag", "Profiles"], quality_rows)}</div><div class="card"><h3>Classical-stage support</h3>{_table(["Band", "Profiles"], support_rows)}</div></div></section>
+<section><h2>Detailed calls — all input profiles</h2><p class="note">One row per supplied profile. This complete table includes the input allelic profile, final call, classical-stage output, Cryptic-gate metrics, and quality/review fields for every isolate.</p><div class="table-wrap">{_table(detail_columns, detail_rows, "details")}</div></section>
+<section><h2>Priority review queue</h2><p class="note">Subset of the detailed calls table, ordered by input-quality risk, then Cryptic calls and lower classical-stage support. Up to 100 rows are shown.</p><div class="table-wrap">{_table(queue_columns, queue_rows, "queue") if queue_rows else '<p class="note">No profiles were flagged for expert review.</p>'}</div></section>
 {_evaluation_sections(out_df)}
 <section><h2>Provenance</h2>{_table(["Field", "Value"], provenance_rows, "metrics")}</section>
 <footer>Stage-1 support is not a calibrated probability of the final call. Cryptic calls with fewer than four rare loci are flagged for review. The published development benchmark has reduced Clade2 recall and very limited Clade3 support; use the model card and validation documentation when interpreting a cohort.</footer>
