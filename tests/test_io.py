@@ -43,6 +43,11 @@ class MlstIoTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unknown mlst_clade"):
             self._table(row11, require_labels=True)
 
+    def test_parenthesized_missing_label_is_treated_as_unlabelled(self):
+        row11 = "x,cdifficile,1,1,1,1,1,1,1,1,mlst_clade(nan)\n"
+        df = self._table(row11)
+        self.assertEqual(df.loc[0, "mlst_clade"], "")
+
     def test_rejects_malformed_width(self):
         with self.assertRaisesRegex(ValueError, "10 or 11 columns"):
             self._table("x,cdifficile,1,1,1\n")
