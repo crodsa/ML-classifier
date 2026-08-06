@@ -17,7 +17,7 @@ import pandas as pd
 
 from . import PROGRAM, VERSION
 from .config import ALL_CLADES
-from .io import summarize_multiclass
+from .io import evaluation_group_ids, summarize_multiclass
 
 
 def _esc(value: Any) -> str:
@@ -58,31 +58,49 @@ def _evaluation_sections(out_df: pd.DataFrame) -> str:
             "This run provides classifications, not a new estimate of performance.</p></section>"
         )
 
-    evaluation = out_df.loc[labelled, ["st", "mlst_clade", "final_prediction"]].copy()
+    evaluation = out_df.loc[
+        labelled, ["isolate", "st", "mlst_clade", "final_prediction"]
+    ].copy()
     metrics = summarize_multiclass(
         evaluation["mlst_clade"].to_numpy(),
         evaluation["final_prediction"].to_numpy(),
         labels=ALL_CLADES,
     )
+    observed_labels = sorted(evaluation["mlst_clade"].unique())
+    observed_metrics = summarize_multiclass(
+        evaluation["mlst_clade"].to_numpy(),
+        evaluation["final_prediction"].to_numpy(),
+        labels=observed_labels,
+    )
     blocks = [
         "<section><h2>Evaluation against supplied labels</h2>",
         _table(["Metric", "Value"], _metric_rows(metrics), "metrics"),
+        (
+            '<p class="note">Reference coverage: '
+            f"{len(observed_labels)}/{len(ALL_CLADES)} model classes. Macro F1 across observed "
+            f"reference classes: {observed_metrics['macro_f1']:.3f}. The fixed six-class macro F1 "
+            "above assigns zero to unobserved classes.</p>"
+        ),
     ]
-    st = evaluation["st"].astype(str).str.strip()
-    missing_st = st.str.casefold().isin({"", "-", "na", "n/a", "nan", "none"})
-    if not missing_st.any():
-        grouped = evaluation.assign(st=st).drop_duplicates("st")
-        grouped_metrics = summarize_multiclass(
-            grouped["mlst_clade"].to_numpy(),
-            grouped["final_prediction"].to_numpy(),
-            labels=ALL_CLADES,
-        )
-        blocks.extend(
-            [
-                "<h3>One vote per sequence type</h3>",
-                _table(["Metric", "Value"], _metric_rows(grouped_metrics), "metrics"),
-            ]
-        )
+    groups, n_unassigned = evaluation_group_ids(evaluation["st"], evaluation["isolate"])
+    grouped = evaluation.assign(_group=groups).drop_duplicates("_group")
+    grouped_metrics = summarize_multiclass(
+        grouped["mlst_clade"].to_numpy(),
+        grouped["final_prediction"].to_numpy(),
+        labels=ALL_CLADES,
+    )
+    note = (
+        f" {n_unassigned} row(s) with unassigned ST were counted as separate groups."
+        if n_unassigned
+        else ""
+    )
+    blocks.extend(
+        [
+            "<h3>One vote per sequence type</h3>",
+            _table(["Metric", "Value"], _metric_rows(grouped_metrics), "metrics"),
+            f'<p class="note">{note.strip()}</p>' if note else "",
+        ]
+    )
     blocks.append("</section>")
     return "".join(blocks)
 
@@ -122,6 +140,7 @@ def write_html_report(
         "n_missing_loci",
         "n_approx_loci",
         "n_unknown_alleles",
+        "rare_locus_count_report",
         "sum_min_dist_any_classical",
         "nearest_profile_dist_any_classical",
     ]
@@ -165,6 +184,6 @@ table{{border-collapse:collapse;width:100%;background:#fff;margin:10px 0 16px}} 
 <section><h2>Priority review queue</h2><p class="note">Ordered by input-quality risk, then Cryptic calls and lower classical-stage support. Up to 100 rows are shown.</p>{_table(queue_columns, queue_rows, "queue") if queue_rows else '<p class="note">No profiles were flagged for expert review.</p>'}</section>
 {_evaluation_sections(out_df)}
 <section><h2>Provenance</h2>{_table(["Field", "Value"], provenance_rows, "metrics")}</section>
-<footer>Stage-1 support is not a calibrated probability of the final call. The published development benchmark has reduced Clade2 recall and very limited Clade3 support; use the model card and validation documentation when interpreting a cohort.</footer>
+<footer>Stage-1 support is not a calibrated probability of the final call. Cryptic calls with fewer than four rare loci are flagged for review. The published development benchmark has reduced Clade2 recall and very limited Clade3 support; use the model card and validation documentation when interpreting a cohort.</footer>
 </body></html>"""
     Path(path).write_text(document, encoding="utf-8")
