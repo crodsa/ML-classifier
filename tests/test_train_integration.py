@@ -96,6 +96,8 @@ class TrainerIntegrationTests(unittest.TestCase):
                     str(model),
                     "-o",
                     str(predictions),
+                    "--report-html",
+                    str(work / "report.html"),
                 ],
                 cwd=root,
                 text=True,
@@ -105,6 +107,8 @@ class TrainerIntegrationTests(unittest.TestCase):
             self.assertEqual(predicted.returncode, 0, predicted.stderr)
             output = pd.read_csv(predictions, sep="\t")
             self.assertEqual(output.final_prediction.tolist(), output.mlst_clade.tolist())
+            report = (work / "report.html").read_text(encoding="utf-8")
+            self.assertIn("Priority review queue", report)
 
 
 if __name__ == "__main__":
