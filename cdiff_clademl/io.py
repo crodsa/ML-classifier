@@ -94,7 +94,8 @@ def parse_clade_field(raw: str) -> str:
     if value.casefold() in _MISSING_VALUES:
         return ""
     inner = extract_parenthetical(value)
-    return inner.strip() if inner else value
+    cleaned = inner.strip() if inner else value
+    return "" if cleaned.casefold() in _MISSING_VALUES else cleaned
 
 
 # ==============================================================================
