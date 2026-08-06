@@ -38,13 +38,14 @@ c2a8294cd473ff3f79e9ced92bc743e13706b6a0c1a5a122dbec3746b2efd115
 | Compatibility | Unbounded dependencies and a scikit-learn 1.7.1→1.9.0 warning | Exact `scikit-learn==1.7.1` dependency and version-mismatch rejection by default |
 | Security | Pickle loading without a trust warning | Trust guidance, pre-load digest verification, and `SECURITY.md` |
 | Query quality | No explicit signal for new or approximate alleles | Counts, `quality_flag`, and `review_recommended` |
-| Distribution | No README, license, tests, or model in the wheel | Package metadata, documentation, 13 tests, and a self-contained wheel |
+| Distribution | No README, license, tests, or model in the wheel | Package metadata, documentation, automated tests, and a self-contained wheel |
 
 ## Verification evidence
 
 - Ruff static analysis: passed;
 - Python module compilation: passed;
-- 13 unit and integration tests: passed;
+- 15 unit and integration tests, including report rendering and FastMLST
+  parenthesized-missing-label handling: passed;
 - complete synthetic training with 30 samples/30 STs, seven matrices, five
   folds, cross-fitting, save, reload, and prediction: passed;
 - structural validation of 25,124 real records and seven real matrices: passed;
@@ -56,10 +57,11 @@ c2a8294cd473ff3f79e9ced92bc743e13706b6a0c1a5a122dbec3746b2efd115
 
 ## Residual risks
 
-1. This directory is not a Git repository. It therefore has no history, signed
-   tags, CI, or remotely verifiable release. The local wheel is installable,
-   but a formal publication should begin with version control and CI for Python
-   3.10–3.13.
+1. Public distribution requires a tagged GitHub Release containing both wheel
+   and source distribution, SHA-256 checksums, and successful CI for Python
+   3.10–3.13. The release workflow added with this audit enforces the test,
+   lint, build, and package-metadata checks, but maintainers must confirm the
+   release assets before publishing a tag.
 2. The production model was deliberately not retrained so the validated binary
    artifact could be preserved and replaced later. The corrected trainer passed
    a synthetic end-to-end test and validated the real data and matrices, but
@@ -68,17 +70,16 @@ c2a8294cd473ff3f79e9ced92bc743e13706b6a0c1a5a122dbec3746b2efd115
 3. The initial audit environment used scikit-learn 1.9.0. Under the expert
    override it produced the same 4,650 predictions. The final wheel test also
    ran with the required version 1.7.1 and no override.
-4. The independent benchmark was consulted during several development
-   iterations. A major release must treat it as a development set and replace
-   it with a final locked cohort.
+4. The no-overlap benchmark was consulted during several development
+   iterations. It is a development benchmark, not prospective validation. A
+   major release must replace it with a final locked cohort.
 5. Temporal and geographic provenance, label criteria, and a formally versioned
    PubMLST snapshot are missing. They are requirements for the next model card,
    not optional details.
 
 ## Distribution decision
 
-Package 5.4.0 is ready for controlled distribution as research software. It is
-not ready for a clinical claim or for presenting the current benchmark as
-prospective validation. Public release should add a version-controlled
-repository, CI, a source distribution (`sdist`), and an explicit license or
-policy for any datasets distributed separately.
+Package 5.4.0 is ready for public distribution as research software once the
+maintainer creates the tagged release and attaches the CI-built wheel, source
+distribution, and checksums. It is not ready for a clinical claim or for
+presenting the current development benchmark as prospective validation.
