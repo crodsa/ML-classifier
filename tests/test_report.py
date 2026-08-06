@@ -17,6 +17,7 @@ class HtmlReportTests(unittest.TestCase):
                 "final_reason": ["distance+low_classical_support", "classical_stage1"],
                 "quality_flag": ["UNKNOWN_ALLELE", "PASS"],
                 "stage1_support_band": ["LOW", "HIGH"],
+                "confidence_band": ["LOW", "HIGH"],
                 "stage1_confidence": [0.23, 0.94],
                 "n_missing_loci": [0, 0],
                 "n_approx_loci": [0, 0],
@@ -45,6 +46,11 @@ class HtmlReportTests(unittest.TestCase):
             self.assertIn("review &lt;this&gt;", report)
             self.assertIn("Clade4", report)
             self.assertIn("not validated for clinical diagnosis", report)
+            isolate_header = report.find("<th>isolate</th>")
+            final_header = report.find("<th>final_prediction</th>")
+            support_header = report.find("<th>stage1_confidence</th>")
+            self.assertLess(isolate_header, final_header)
+            self.assertLess(final_header, support_header)
 
 
 if __name__ == "__main__":
