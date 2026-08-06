@@ -44,7 +44,7 @@ c2a8294cd473ff3f79e9ced92bc743e13706b6a0c1a5a122dbec3746b2efd115
 
 - Ruff static analysis: passed;
 - Python module compilation: passed;
-- 15 unit and integration tests, including report rendering and FastMLST
+- 16 unit and integration tests, including report rendering and FastMLST
   parenthesized-missing-label handling: passed;
 - complete synthetic training with 30 samples/30 STs, seven matrices, five
   folds, cross-fitting, save, reload, and prediction: passed;
