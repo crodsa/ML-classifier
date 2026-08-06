@@ -6,6 +6,14 @@ two-stage classifier: a Random Forest first assigns a classical clade, then a
 gate based on allele distances and classical-model support detects Cryptic
 profiles.
 
+> **Re-use of the architecture:** this repository can serve as a starting
+> point for a separately validated classifier based on MLST allele profiles in
+> another organism or classification system. The bundled model, its thresholds,
+> its distance matrices, and its biological interpretation are specific to
+> seven-locus *C. difficile* MLST. They must **not** be used for another
+> species or classification. See
+> [`docs/ADAPTING_TO_OTHER_MLST_SCHEMES.md`](docs/ADAPTING_TO_OTHER_MLST_SCHEMES.md).
+
 Routine use requires only the `CdiffCladeML-predict` command. Training is an
 advanced operation intended for model maintainers.
 
@@ -126,8 +134,9 @@ Each run creates:
 - `results/predictions_summary.json`: class counts, quality flags, runtime
   versions, and the model hash.
 - `results/run_report.html` when `--report-html` is used: cohort overview,
-  quality flags, prioritised review queue, provenance, and evaluation metrics
-  when reference labels are supplied.
+  a complete per-isolate table with final calls first, star-marked review
+  flags, provenance, and evaluation metrics when reference labels are
+  supplied.
 
 If the executable is not available on `PATH`, use the equivalent module form:
 
@@ -248,6 +257,30 @@ labels and profiles, and valid matrices covering the observed alleles. The
 model and its `*_model_card.json` are created together. Before replacing the
 official model, repeat ST-grouped validation and evaluate an independent locked
 cohort that was not used to select the architecture or thresholds.
+
+## Adapt the architecture to another MLST classification
+
+The codebase is adaptable, but this is a **development and validation project**,
+not a model-file substitution. A derivative classifier needs its own target
+classes, loci, allele-distance matrices, training cohort, held-out evaluation,
+model card, and release name. It is best suited to a classification with
+well-defined reference groups plus a biologically meaningful divergent or
+outlier group, analogous to the present Classical-versus-Cryptic design.
+
+The practical route is:
+
+1. Fork the repository and define the target classification and reference
+   standard.
+2. Configure the target loci and labels, and generalise the C. difficile-
+   specific `Cryptic` gate where appropriate.
+3. Create one biologically justified allele-distance matrix per locus, train
+   only on labelled profiles, and validate with ST-grouped cross-validation.
+4. Lock an external temporal or geographic cohort before selecting the final
+   model release.
+
+The complete implementation checklist, input contract, matrix requirements,
+and validation safeguards are in
+[`docs/ADAPTING_TO_OTHER_MLST_SCHEMES.md`](docs/ADAPTING_TO_OTHER_MLST_SCHEMES.md).
 
 ## Troubleshooting
 
