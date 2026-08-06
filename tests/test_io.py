@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 
 from cdiff_clademl.io import (
+    evaluation_group_ids,
     parse_allele_field,
     read_mlst_table,
     write_grouped_eval_files,
@@ -63,6 +64,13 @@ class MlstIoTests(unittest.TestCase):
                     np.array(["1", "1"]),
                     ["Clade1", "Clade2"],
                 )
+
+    def test_new_st_values_are_separate_evaluation_groups(self):
+        groups, n_unassigned = evaluation_group_ids(
+            np.array(["new_ST", "1000", "new_ST"]), np.array(["a", "b", "c"])
+        )
+        self.assertEqual(n_unassigned, 2)
+        self.assertEqual(groups.nunique(), 3)
 
 
 if __name__ == "__main__":
