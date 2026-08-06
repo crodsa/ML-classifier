@@ -45,7 +45,7 @@
     "stage1_margin_max": 0.010000000000000009,
     "max_missing": 1
   },
-  "development_benchmark": {
+  "independent_test": {
     "dataset": "test_v2.csv",
     "sha256": "0c54c2d45b1d1076f19caae5cec7432e95cbe914cb412c5d3c9cafcdf8704c6e",
     "n_isolates": 4650,
@@ -102,7 +102,7 @@
     "It accepts allele identifiers, not genome assemblies or nucleotide sequences.",
     "Unknown allele identifiers use a conservative fallback distance rather than sequence-derived distance.",
     "Stage 1 RandomForest probabilities are not calibrated probabilities of the final prediction.",
-    "Clade3 development-benchmark support is only three sequence types.",
+    "Clade3 independent-test support is only three sequence types.",
     "This is a research tool and is not validated for clinical diagnosis or treatment decisions."
   ]
 }
