@@ -13,16 +13,34 @@ advanced operation intended for model maintainers.
 > diagnostic device and does not replace bioinformatic, epidemiological, or
 > phylogenomic review.
 
+## Release status and scientific interpretation
+
+Version 5.4 is a public research release. It is appropriate for reproducible
+screening of seven-locus MLST profiles, with expert review of all profiles that
+the tool flags. It is **not** a clinical diagnostic or treatment-decision tool.
+
+The published 4,650-isolate / 319-ST evaluation split has no overlap with the
+training collection, but it was consulted during iterative development. It is
+therefore a **development benchmark**, not prospective or final independent
+validation. The next major model release requires a newly locked temporal or
+geographic cohort. See [`docs/VALIDATION.md`](docs/VALIDATION.md).
+
 ## Quick start: classify MLST profiles
 
 ### 1. Requirements
 
 - Python 3.10, 3.11, 3.12, or 3.13.
-- The `cdiffclademl-5.4.0-py3-none-any.whl` file from this distribution.
+- Either a release wheel or a source checkout of this repository.
 - A CSV or TSV file containing MLST profiles.
 
 You do not need to download a model separately. The wheel includes the
 validated model and its provenance card.
+
+For a source checkout, install directly with:
+
+```bash
+python -m pip install .
+```
 
 ### 2. Create an environment and install
 
@@ -93,11 +111,23 @@ CdiffCladeML-predict profiles.csv \
   --verbose
 ```
 
+To create a portable, human-readable review report in addition to the TSV and
+JSON outputs:
+
+```bash
+CdiffCladeML-predict profiles.csv \
+  -o results/predictions.tsv \
+  --report-html results/run_report.html
+```
+
 Each run creates:
 
 - `results/predictions.tsv`: one detailed row per sample;
 - `results/predictions_summary.json`: class counts, quality flags, runtime
   versions, and the model hash.
+- `results/run_report.html` when `--report-html` is used: cohort overview,
+  quality flags, prioritised review queue, provenance, and evaluation metrics
+  when reference labels are supplied.
 
 If the executable is not available on `PATH`, use the equivalent module form:
 
@@ -136,6 +166,16 @@ They are not calibrated probabilities that the final call is correct. A
 
 Manually review every row with `review_recommended=True`, particularly profiles
 with unknown alleles or missing data.
+
+A `Cryptic` output is a combined-category call, not an identification of a
+specific cryptic lineage. When its profile is partial or contains unknown
+alleles, treat it as a **Cryptic candidate requiring review**, not as a final
+phylogenetic designation.
+
+Version 5.4 reports `rare_locus_count_report` but the retained v5.3.0 binary
+does not use a four-rare-locus threshold as a hard gate. A Cryptic call with
+fewer than four rare loci is therefore marked for expert review; a future model
+revision should make any stricter gate part of a newly validated model bundle.
 
 ## Evaluate a labelled table
 
@@ -224,16 +264,17 @@ cohort that was not used to select the architecture or thresholds.
 ## Bundled model and validation evidence
 
 Software release 5.4 bundles `model_v5.joblib`, model version 5.3.0. On the
-independent test set, the primary one-vote-per-ST analysis produced accuracy
+development benchmark, the primary one-vote-per-ST analysis produced accuracy
 0.9373, balanced accuracy 0.9416, and macro-F1 0.9527. It detected 25/25
-Cryptic STs; `Clade2` recall was 43/59, and `Clade3` had only three STs, so
-these classes require particular caution.
+Cryptic STs; `Clade2` recall was 43/59 (72.9%), and `Clade3` had only three
+STs. These classes require particular caution.
 
 See [`docs/VALIDATION.md`](docs/VALIDATION.md) for the methodology, confusion
 matrices, limitations, and future model-release criteria. See
 [`docs/ENGINEERING_AUDIT.md`](docs/ENGINEERING_AUDIT.md) for the software
 engineering review. Model provenance and hashes are recorded in
-`model_v5_model_card.json`.
+`model_v5_model_card.json`. Cite the software using
+[`CITATION.cff`](CITATION.cff).
 
 ## Package development and verification
 

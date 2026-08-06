@@ -36,11 +36,13 @@ from cdiff_clademl.bundle import (
 from cdiff_clademl.config import ALL_CLADES, CONFIDENCE_BAND_THRESHOLDS
 from cdiff_clademl.features import build_meta_features
 from cdiff_clademl.io import (
+    evaluation_group_ids,
     read_mlst_table,
     write_eval_files,
     write_grouped_eval_files,
 )
 from cdiff_clademl.model import apply_v5_gate
+from cdiff_clademl.report import write_html_report
 from cdiff_clademl.utils import setup_logging, vprint
 
 
@@ -180,6 +182,12 @@ def main() -> None:
         default=None,
         help="If set and mlst_clade column is present, write eval files with this prefix.",
     )
+    ap.add_argument(
+        "--report-html",
+        default=None,
+        metavar="PATH",
+        help="Write a standalone human-readable HTML run report to PATH.",
+    )
     ap.add_argument("--verbose", action="store_true", help="Verbose logging (INFO level).")
     ap.add_argument(
         "--allow-version-mismatch",
@@ -308,8 +316,10 @@ def main() -> None:
         ["INSUFFICIENT_LOCI", "UNKNOWN_ALLELE", "PARTIAL_PROFILE"],
         default="PASS",
     )
-    out["review_recommended"] = out["stage1_support_band"].eq("LOW") | out["quality_flag"].ne(
-        "PASS"
+    out["review_recommended"] = (
+        out["stage1_support_band"].eq("LOW")
+        | out["quality_flag"].ne("PASS")
+        | (out["final_prediction"].eq("Cryptic") & out["rare_locus_count_report"].lt(4))
     )
 
     _out_dir = os.path.dirname(args.output_predictions)
@@ -347,22 +357,35 @@ def main() -> None:
             final_pred[_labelled],
             ALL_CLADES,
         )
-        labelled_st = df.loc[_labelled, "st"].astype(str).str.strip()
-        missing_st = labelled_st.str.casefold().isin({"", "-", "na", "n/a", "nan", "none"})
-        if missing_st.any():
+        labelled_st, n_unassigned_st = evaluation_group_ids(
+            df.loc[_labelled, "st"], df.loc[_labelled, "isolate"]
+        )
+        if n_unassigned_st:
             logging.warning(
-                "Skipping ST-weighted metrics because %d labelled row(s) lack ST.",
-                int(missing_st.sum()),
+                "Treating %d row(s) with unassigned ST as separate groups in ST-weighted metrics.",
+                n_unassigned_st,
             )
-        else:
-            write_grouped_eval_files(
-                f"{args.metrics_prefix}_by_st",
-                df.loc[_labelled, "mlst_clade"].to_numpy(),
-                final_pred[_labelled],
-                labelled_st.to_numpy(),
-                ALL_CLADES,
-            )
+        write_grouped_eval_files(
+            f"{args.metrics_prefix}_by_st",
+            df.loc[_labelled, "mlst_clade"].to_numpy(),
+            final_pred[_labelled],
+            labelled_st.to_numpy(),
+            ALL_CLADES,
+        )
         vprint("Evaluation files written.", args.verbose)
+
+    if args.report_html:
+        report_path = Path(args.report_html)
+        if report_path.parent:
+            report_path.parent.mkdir(parents=True, exist_ok=True)
+        write_html_report(
+            report_path,
+            out,
+            summary=json.loads(Path(summary_path).read_text(encoding="utf-8")),
+            model_version=model_version,
+            model_sha256=model_sha256,
+        )
+        vprint(f"HTML report written to {report_path}", args.verbose)
 
 
 if __name__ == "__main__":

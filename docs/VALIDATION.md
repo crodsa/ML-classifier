@@ -4,13 +4,14 @@ Review date: 2026-07-20.
 
 ## Conclusion
 
-The bundled model shows strong evidence of generalization to unseen MLST
-profiles, particularly for the combined `Cryptic` category. The valid evidence
-comes from `test_v2.csv`, not from the historical out-of-fold (OOF) metrics.
-The recommended use is research and surveillance; the evidence does not support
-clinical use or a precise performance claim for `Clade3`.
+The bundled model provides initial evidence of utility on unseen MLST profiles,
+particularly for the combined `Cryptic` category. This evidence comes from
+`test_v2.csv`, not from the historical out-of-fold (OOF) metrics, and must be
+interpreted as a development benchmark because the split informed iterative
+development. The recommended use is research and surveillance; the evidence
+does not support clinical use or a precise performance claim for `Clade3`.
 
-## Test-set independence
+## Development-benchmark split independence
 
 Direct review of `train_v2.csv` and `test_v2.csv` verified:
 
@@ -24,7 +25,7 @@ The 4,650 test isolates represent 319 repeated STs. Therefore, the primary
 analysis gives one vote to each ST, while the isolate-weighted analysis is
 reported as secondary.
 
-## Independent performance
+## Development-benchmark performance
 
 ### One vote per ST (n = 319)
 
@@ -98,10 +99,10 @@ STs.
 
 ## Limitations and criteria for the next model release
 
-- The independent test set was consulted repeatedly while developing several
-  versions and must now be treated as a development benchmark. A future major
-  release requires a final locked temporal or geographic cohort that is not
-  used for architecture or threshold selection.
+- The no-overlap test split was consulted repeatedly while developing several
+  versions and is therefore a development benchmark, not independent final
+  validation. A future major release requires a final locked temporal or
+  geographic cohort that is not used for architecture or threshold selection.
 - `Clade3` has only three STs in the test set. Its perfect result is not a
   stable performance estimate.
 - The `Cryptic` label combines cryptic lineages and does not identify an
@@ -110,6 +111,10 @@ STs.
   classical stage and are not posterior probabilities of the final call.
 - A new allele identifier provides no nucleotide sequence. Its fallback
   distance is heuristic and triggers an expert-review flag.
+- The retained v5.3.0 model reports the number of rare loci but does not use a
+  four-rare-locus criterion as a hard Cryptic-gate condition. The predictor
+  flags Cryptic calls below that threshold for review; making it a hard gate
+  requires retraining and a new locked-cohort evaluation.
 - The next dataset must document the PubMLST version and date, clade-labelling
   criteria, geographic and temporal provenance, and deduplication procedure.
 
