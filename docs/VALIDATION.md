@@ -111,6 +111,10 @@ STs.
   classical stage and are not posterior probabilities of the final call.
 - A new allele identifier provides no nucleotide sequence. Its fallback
   distance is heuristic and triggers an expert-review flag.
+- The retained v5.3.0 model reports the number of rare loci but does not use a
+  four-rare-locus criterion as a hard Cryptic-gate condition. The predictor
+  flags Cryptic calls below that threshold for review; making it a hard gate
+  requires retraining and a new locked-cohort evaluation.
 - The next dataset must document the PubMLST version and date, clade-labelling
   criteria, geographic and temporal provenance, and deduplication procedure.
 
