@@ -41,6 +41,7 @@ from cdiff_clademl.io import (
     write_grouped_eval_files,
 )
 from cdiff_clademl.model import apply_v5_gate
+from cdiff_clademl.report import write_html_report
 from cdiff_clademl.utils import setup_logging, vprint
 
 
@@ -179,6 +180,12 @@ def main() -> None:
         "--metrics_prefix",
         default=None,
         help="If set and mlst_clade column is present, write eval files with this prefix.",
+    )
+    ap.add_argument(
+        "--report-html",
+        default=None,
+        metavar="PATH",
+        help="Write a standalone human-readable HTML run report to PATH.",
     )
     ap.add_argument("--verbose", action="store_true", help="Verbose logging (INFO level).")
     ap.add_argument(
@@ -363,6 +370,19 @@ def main() -> None:
                 ALL_CLADES,
             )
         vprint("Evaluation files written.", args.verbose)
+
+    if args.report_html:
+        report_path = Path(args.report_html)
+        if report_path.parent:
+            report_path.parent.mkdir(parents=True, exist_ok=True)
+        write_html_report(
+            report_path,
+            out,
+            summary=json.loads(Path(summary_path).read_text(encoding="utf-8")),
+            model_version=model_version,
+            model_sha256=model_sha256,
+        )
+        vprint(f"HTML report written to {report_path}", args.verbose)
 
 
 if __name__ == "__main__":
