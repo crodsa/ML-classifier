@@ -165,7 +165,20 @@ def write_html_report(
         "nearest_profile_dist_any_classical",
     ]
     queue_rows = _prediction_rows(review, queue_columns)
-    detail_columns = list(out_df.columns)
+    # Keep the decision fields visible without horizontal scrolling. The remaining
+    # input, parsing and distance fields are still retained in their source order.
+    decision_columns = [
+        "isolate",
+        "st",
+        "final_prediction",
+        "final_reason",
+        "stage1_support_band",
+        "confidence_band",
+        "quality_flag",
+        "review_recommended",
+    ]
+    detail_columns = [column for column in decision_columns if column in out_df.columns]
+    detail_columns.extend(column for column in out_df.columns if column not in detail_columns)
     detail_rows = _prediction_rows(out_df, detail_columns)
 
     hash_display = (model_sha256 or "not recorded")
