@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use CdiffCladeML, please cite this software and its associated validation work."
+title: "CdiffCladeML: a two-stage MLST classifier for Clostridioides difficile clades"
+version: 1.0
+date-released: 2026-10-22
+license: MIT
+type: software
+authors:
+  - family-names: "Rodríguez"
+    given-names: "César"
+    orcid: "https://orcid.org/0000-0001-5599-0652"
+    affiliation: "Facultad de Microbiología and Centro de Investigación en Enfermedades Tropicales (CIET), Universidad de Costa Rica"
+abstract: "Research software for classifying seven-locus Clostridioides difficile MLST profiles into classical clades or a combined Cryptic category."
+repository-code: "https://github.com/crodsa/ML-classifier"

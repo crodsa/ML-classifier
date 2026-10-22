@@ -1,0 +1,13 @@
+include LICENSE
+include README.md
+include SECURITY.md
+include CHANGELOG.md
+include CITATION.cff
+include CONTRIBUTING.md
+include model.joblib
+include model_model_card.json
+recursive-include docs *.md
+recursive-include tests *.py *.csv
+global-exclude .DS_Store
+global-exclude *.py[cod]
+global-exclude __pycache__

@@ -1,0 +1,109 @@
+{
+  "tool": "CdiffCladeML",
+  "version": "1.0",
+  "model_version": "1.0",
+  "created_at": "2026-10-22T00:00:00Z",
+  "bundle_schema_version": 1,
+  "model_sha256": "55c20798d584d09b854417bda67879b33247c0ab7629d2205dbb8102b9c70564",
+  "serialization": {
+    "format": "joblib/pickle",
+    "scikit_learn": "1.7.1",
+    "python": "3.12",
+    "warning": "Load only model files from trusted sources."
+  },
+  "architecture": {
+    "stage1": "RandomForest (500 trees, balanced_subsample) over one-hot encoded seven-locus allele tokens",
+    "stage2": "Rule-based Cryptic gate using allele/profile distances and low classical Stage 1 support"
+  },
+  "distribution": {
+    "model_and_distance_matrices_license": "MIT",
+    "training_tables_distributed": false,
+    "rights_statement": "The repository owner is the author of the training data, distance matrices, and derived model, and authorized public redistribution of the derived model and distance matrices under MIT terms."
+  },
+  "training_data": {
+    "dataset": "train_v2.csv",
+    "sha256": "5411466ef1f122c0d2188f472dadf209609444ecf1101f2f3f5de6b3f2e46acb",
+    "n_isolates": 25124,
+    "n_sequence_types": 130,
+    "n_classical": 25020,
+    "n_cryptic": 104,
+    "isolate_distribution": {
+      "Clade1": 15480,
+      "Clade2": 5079,
+      "Clade3": 515,
+      "Clade4": 1217,
+      "Clade5": 2729,
+      "Cryptic": 104
+    },
+    "sequence_type_distribution": {
+      "Clade1": 18,
+      "Clade2": 6,
+      "Clade3": 6,
+      "Clade4": 6,
+      "Clade5": 6,
+      "Cryptic": 88
+    }
+  },
+  "learned_rules": {
+    "sum_min_dist_any_threshold": 0.06288377553666645,
+    "nearest_profile_any_threshold": 0.005564496727467278,
+    "stage1_confidence_max": 0.44551020408163255,
+    "stage1_margin_max": 0.010000000000000009,
+    "max_missing": 1
+  },
+  "independent_test": {
+    "dataset": "test_v2.csv",
+    "sha256": "0c54c2d45b1d1076f19caae5cec7432e95cbe914cb412c5d3c9cafcdf8704c6e",
+    "n_isolates": 4650,
+    "n_sequence_types": 319,
+    "training_test_isolate_overlap": 0,
+    "training_test_sequence_type_overlap": 0,
+    "training_test_profile_overlap": 0,
+    "isolate_weighted_metrics": {
+      "accuracy": 0.9694623655913979,
+      "balanced_accuracy": 0.9161408495450853,
+      "macro_f1": 0.935278867112245,
+      "weighted_f1": 0.9662832222199988
+    },
+    "sequence_type_weighted_metrics": {
+      "accuracy": 0.9373040752351097,
+      "balanced_accuracy": 0.9415922971309535,
+      "macro_f1": 0.9526614622314741,
+      "weighted_f1": 0.93464065363685
+    },
+    "sequence_type_recall": {
+      "Clade1": 0.9832402234636871,
+      "Clade2": 0.7288135593220338,
+      "Clade3": 1.0,
+      "Clade4": 1.0,
+      "Clade5": 0.9375,
+      "Cryptic": 1.0
+    },
+    "sequence_type_support": {
+      "Clade1": 179,
+      "Clade2": 59,
+      "Clade3": 3,
+      "Clade4": 37,
+      "Clade5": 16,
+      "Cryptic": 25
+    }
+  },
+  "distance_matrix_sha256": {
+    "adk": "22f244bc8c6d87baa8e2274603fc84ef88ed9a0d144b3a205d472b4db6a344f3",
+    "atpA": "02c54642ff1739208b2ea417a147b14910949c5c6ee41ecaf2894a83793719a5",
+    "dxr": "66b077f6b35c81959746d6f6b5a5775a5a24ef0a38c4cf0f1282b0ee58e559a7",
+    "glyA": "9181259420090cea175fdf89a9176c0802f04debed297108092a3b4ed5cea8ac",
+    "recA": "45975e76832aa8f564a1123a526511e105058969903bd0d0d87ebc3ad4dd1153",
+    "sodA": "3a01982fa4b2c0b4ece2aa0be0854eca8470a5f5afdd82e2e146f4e77a0a6eeb",
+    "tpi": "9d4b8542e6c72ff00e7b4343079e1bf39f8ad2b6401e88bdeb7764aeb9c2930a"
+  },
+  "intended_use": "Research classification of C. difficile seven-locus MLST profiles into Clade1-Clade5 or a combined Cryptic category.",
+  "limitations": [
+    "The model does not distinguish individual Cryptic lineages.",
+    "It accepts allele identifiers, not genome assemblies or nucleotide sequences.",
+    "Unknown allele identifiers use a conservative fallback distance rather than sequence-derived distance.",
+    "Stage 1 RandomForest probabilities are not calibrated probabilities of the final prediction.",
+    "Clade3 held-out test support is only three sequence types.",
+    "This is a research tool and is not validated for clinical diagnosis or treatment decisions."
+  ]
+}
