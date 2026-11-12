@@ -1,0 +1,36 @@
+{
+  "title": "CdiffCladeML: Two-stage multilocus sequence typing clade classifier for Clostridioides difficile",
+  "version": "1.0.0",
+  "upload_type": "software",
+  "license": "MIT",
+  "description": "CdiffCladeML (v1.0.0) is a two-stage supervised and allele-distance classifier for seven-locus Clostridioides difficile MLST allele profiles, resolving classical clades 1-5 via a one-hot-encoded Random Forest and routing divergent cryptic Clostridioides lineages via an allele- and profile-distance gate.",
+  "creators": [
+    {
+      "name": "Rodríguez, César",
+      "affiliation": "Facultad de Microbiología and Centro de Investigación en Enfermedades Tropicales (CIET), Universidad de Costa Rica, San José, Costa Rica",
+      "orcid": "0000-0001-5599-0652"
+    }
+  ],
+  "keywords": [
+    "Clostridioides difficile",
+    "cryptic Clostridioides",
+    "MLST",
+    "multilocus sequence typing",
+    "machine learning",
+    "genomic surveillance",
+    "microbial genomics"
+  ],
+  "language": "eng",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/crodsa/treetip-placer",
+      "relation": "references",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://www.ebi.ac.uk/ena/browser/view/PRJEB103842",
+      "relation": "references",
+      "resource_type": "dataset"
+    }
+  ]
+}

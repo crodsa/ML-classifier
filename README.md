@@ -131,7 +131,7 @@ CdiffCladeML-predict --version
 Expected output for this release:
 
 ```text
-CdiffCladeML-predict 1.0
+CdiffCladeML-predict 1.0.0
 ```
 
 ### Run the bundled example
@@ -159,13 +159,13 @@ profile from each output category, so its six final predictions should be
 ### Install a release wheel instead
 
 If you do not need the source checkout, download
-`cdiffclademl-1.0-py3-none-any.whl` from the
-[v1.0 GitHub Release](https://github.com/crodsa/ML-classifier/releases/tag/v1.0),
+`cdiffclademl-1.0.0-py3-none-any.whl` from the
+[v1.0.0 GitHub Release](https://github.com/crodsa/ML-classifier/releases/tag/v1.0.0),
 create and activate a virtual environment as shown above, and install the
 downloaded file:
 
 ```bash
-python -m pip install /path/to/cdiffclademl-1.0-py3-none-any.whl
+python -m pip install /path/to/cdiffclademl-1.0.0-py3-none-any.whl
 ```
 
 Replace `/path/to/` with the folder where the wheel was downloaded. The release
@@ -509,7 +509,7 @@ Stage-1 classical clade is retained.
 <details>
 <summary><strong>🔧 Exact bundled thresholds and distance fallbacks</strong></summary>
 
-The bundled `model.joblib` (`v1.0`) records these learned gate values:
+The bundled `model.joblib` (`v1.0.0`) records these learned gate values:
 
 | Rule | Threshold |
 | --- | ---: |
@@ -579,7 +579,7 @@ appropriate to the question.
 
 ### Bundled model and held-out benchmark
 
-The software and bundled model release is `1.0` (`v1.0`). The training collection contained 25,124 isolates representing
+The software and bundled model release is `1.0.0` (`v1.0.0`). The training collection contained 25,124 isolates representing
 130 STs: 25,020 classical isolates and 104 isolates labelled `Cryptic`. ST
 diversity comprised 18 Clade1 STs, six STs in each of Clade2–Clade5,
 and 88 Cryptic STs.
@@ -836,7 +836,7 @@ run. Do not edit the digest to make the error disappear.
 | [Model provenance](docs/MODEL_PROVENANCE.md) | Where the distributed model and distance resources came from and what is redistributed |
 | [Bundled model card](model_model_card.json) | Exact architecture, hashes, rules, cohort sizes, metrics, and limitations |
 | [Security policy](SECURITY.md) | Why joblib files must be trusted and how hash/version checks work |
-| [Changelog](CHANGELOG.md) | Release notes for v1.0 |
+| [Changelog](CHANGELOG.md) | Release notes for v1.0.0 |
 | [Contributing guide](CONTRIBUTING.md) | How to propose code, documentation, or model changes |
 | [Citation metadata](CITATION.cff) | The software citation record |
 | [MIT licence](LICENSE) | Terms for using and redistributing the source and bundled artifacts |

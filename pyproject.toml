@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "CdiffCladeML"
-version = "1.0"
+version = "1.0.0"
 description = "Two-stage polyphasic C. difficile clade classifier (classical RF + Cryptic gate)"
 readme = "README.md"
 license = "MIT"

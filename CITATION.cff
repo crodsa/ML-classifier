@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use CdiffCladeML, please cite this software and its associated validation work."
 title: "CdiffCladeML: a two-stage MLST classifier for Clostridioides difficile clades"
-version: 1.0
-date-released: 2026-10-22
+version: 1.0.0
+date-released: 2026-11-12
 license: MIT
 type: software
 authors:

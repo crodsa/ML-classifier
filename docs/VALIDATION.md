@@ -2,7 +2,7 @@
 
 ## Overview
 
-The bundled `model.joblib` (`v1.0`) classifies seven-locus *Clostridioides difficile* MLST allele profiles into `Clade1`–`Clade5` or a combined `Cryptic` category. Validation was conducted on a strictly non-overlapping held-out PubMLST benchmark (`test_v2.csv`; 4,650 isolates across 319 unique sequence types [STs]). The recommended use is research and genomic surveillance; the software is not intended for clinical diagnostic decisions.
+The bundled `model.joblib` (`v1.0.0`) classifies seven-locus *Clostridioides difficile* MLST allele profiles into `Clade1`–`Clade5` or a combined `Cryptic` category. Validation was conducted on a strictly non-overlapping held-out PubMLST benchmark (`test_v2.csv`; 4,650 isolates across 319 unique sequence types [STs]). The recommended use is research and genomic surveillance; the software is not intended for clinical diagnostic decisions.
 
 ## Benchmark split independence
 

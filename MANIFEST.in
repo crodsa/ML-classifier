@@ -3,6 +3,7 @@ include README.md
 include SECURITY.md
 include CHANGELOG.md
 include CITATION.cff
+include .zenodo.json
 include CONTRIBUTING.md
 include model.joblib
 include model_model_card.json

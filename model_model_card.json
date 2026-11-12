@@ -1,7 +1,7 @@
 {
   "tool": "CdiffCladeML",
-  "version": "1.0",
-  "model_version": "1.0",
+  "version": "1.0.0",
+  "model_version": "1.0.0",
   "created_at": "2026-10-22T00:00:00Z",
   "bundle_schema_version": 1,
   "model_sha256": "55c20798d584d09b854417bda67879b33247c0ab7629d2205dbb8102b9c70564",
@@ -18,7 +18,8 @@
   "distribution": {
     "model_and_distance_matrices_license": "MIT",
     "training_tables_distributed": false,
-    "rights_statement": "The repository owner is the author of the training data, distance matrices, and derived model, and authorized public redistribution of the derived model and distance matrices under MIT terms."
+    "companion_reproducibility_archive": "Distributed in the companion Zenodo / Supplementary Data 1 archive (v1.0.0; CC BY 4.0): source_data/train_v2.csv, source_data/test_v2.csv, source_data/nan.mlst, and source_data/allele_sequences_cache/*.json.",
+    "rights_statement": "The repository owner is the author of the training data, distance matrices, and derived model, authorized public redistribution of the derived model and distance matrices under MIT terms, and distributes the underlying benchmark tables in the companion Zenodo reproducibility archive."
   },
   "training_data": {
     "dataset": "train_v2.csv",

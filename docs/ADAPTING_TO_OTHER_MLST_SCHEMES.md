@@ -11,7 +11,7 @@ for another species, MLST scheme, or biological question.
 
 Treat a new use as a new model-development study. Keep it in a fork or a
 separately named package; do not overwrite the bundled model or present a
-derivative model as CdiffCladeML v1.0 performance.
+derivative model as CdiffCladeML v1.0.0 performance.
 
 ## Decide whether this architecture fits the question
 

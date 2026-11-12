@@ -1,8 +1,8 @@
 # Changelog
 
-## 1.0 — 2026-10-22
+## 1.0.0 — 2026-11-12
 
-Initial public release of CdiffCladeML (`v1.0`).
+Initial stable semantic-versioned release of CdiffCladeML (`v1.0.0`), with Zenodo archive metadata (`.zenodo.json`) and companion open reproducibility dataset cross-referencing (including ENA BioProject `PRJEB103842`).
 
 - Two-stage *Clostridioides difficile* seven-locus MLST clade classifier combining a Stage-1 one-hot-encoded Random Forest (`Clade1`–`Clade5`, 500 trees, `balanced_subsample`) with a Stage-2 allele- and profile-distance Cryptic gate (`Cryptic`).
 - One-command prediction workflow (`CdiffCladeML-predict` / `cdiff-predict`) generating timestamped TSV predictions, JSON run summaries, and standalone interactive HTML reports.

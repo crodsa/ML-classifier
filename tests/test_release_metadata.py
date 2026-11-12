@@ -22,6 +22,11 @@ class ReleaseMetadataTests(unittest.TestCase):
             pyproject, re.compile(rf'^version = "{re.escape(version)}"$', re.MULTILINE)
         )
         self.assertRegex(citation, re.compile(rf"^version: {re.escape(version)}$", re.MULTILINE))
+        card = json.loads((root / "model_model_card.json").read_text(encoding="utf-8"))
+        zenodo = json.loads((root / ".zenodo.json").read_text(encoding="utf-8"))
+        self.assertEqual(card["version"], version)
+        self.assertEqual(card["model_version"], version)
+        self.assertEqual(zenodo["version"], version)
 
     def test_model_card_records_authorized_distribution_boundary(self) -> None:
         root = Path(__file__).resolve().parents[1]

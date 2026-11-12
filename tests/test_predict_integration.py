@@ -49,7 +49,7 @@ class PredictorIntegrationTests(unittest.TestCase):
 
             summary_path = output.with_name("predictions_summary.json")
             summary = json.loads(summary_path.read_text(encoding="utf-8"))
-            self.assertEqual(summary["model_version"], "1.0")
+            self.assertEqual(summary["model_version"], "1.0.0")
             self.assertEqual(summary["n_samples"], 6)
             self.assertEqual(summary["output_paths"]["predictions_tsv"], str(output.resolve()))
             self.assertTrue(output.with_name("report.html").is_file())
