@@ -37,7 +37,6 @@ from cdiff_clademl.model import apply_cryptic_gate
 from cdiff_clademl.report import write_html_report
 from cdiff_clademl.utils import setup_logging, vprint
 
-
 # ==============================================================================
 # Confidence band helper
 # ==============================================================================
